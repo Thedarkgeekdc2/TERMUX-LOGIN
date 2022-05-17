@@ -5,3 +5,5 @@ This is a basic tool to setup a login interface in termux.
 `cd TERMUX-LOGIN`
 
 `bash settingup.sh`
+
+### DONE!!!
