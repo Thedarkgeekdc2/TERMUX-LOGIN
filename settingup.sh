@@ -31,8 +31,7 @@ rm -rf /data/data/com.termux/files/usr/share/login/
 mkdir /data/data/com.termux/files/usr/share/login
 cd /$HOME/TERMUX-LOGIN
 cp -r * /data/data/com.termux/files/usr/share/login/
-cd
-rm -rf TERMUX-LOGIN
+
 #cat bashrc.txt > /data/data/com.termux/files/usr/etc/bash.bashrc
 #cat zshrc.txt > /data/data/com.termux/files/usr/etc/zshrc
 echo "clear" >/data/data/com.termux/files/usr/etc/bash.bashrc
