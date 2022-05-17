@@ -49,6 +49,7 @@ setopt +o nomatch
 set +m
 . /data/data/com.termux/files/usr/etc/profile
 clear
+cd /data/data/com.termux/files/usr/share/login/
 bash /data/data/com.termux/files/usr/share/login/login.sh
 PS1='%# '
 EOF
