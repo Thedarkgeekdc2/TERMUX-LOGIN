@@ -36,21 +36,26 @@ cp -r * /data/data/com.termux/files/usr/share/login/
 #cat zshrc.txt > /data/data/com.termux/files/usr/etc/zshrc
 echo "clear" >/data/data/com.termux/files/usr/etc/bash.bashrc
 echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/bash.bashrc
-#echo "clear" >/data/data/com.termux/files/usr/etc/zshrc
+echo "set +m" >>/data/data/com.termux/files/usr/etc/bash.bashrc
 #echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/zshrc
 #echo "PS1='%# ' "  >> /data/data/com.termux/files/usr/etc/zshrc
 cat << EOF >/data/data/com.termux/files/usr/etc/zshrc
 . /data/data/com.termux/files/usr/etc/profile
 command_not_found_handler() {
-        /data/data/com.termux/files/usr/libexec/termux/command-not-found $1
+        /data/data/com.termux/files/usr/libexec/termux/command-not-found
 }
 #set nomatch so *.sh would not error if no file is available
 setopt +o nomatch
-set +m
 . /data/data/com.termux/files/usr/etc/profile
+
+trap ' ' 2
+
 clear
+
 cd /data/data/com.termux/files/usr/share/login/
 bash /data/data/com.termux/files/usr/share/login/login.sh
+cd $HOME
+trap 2
 PS1='%# '
 EOF
 echo
