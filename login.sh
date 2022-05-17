@@ -28,6 +28,8 @@ your_banner () {
     printf "\n"
     echo  "                                 telegram @HUNT3R136" | lolcat
     printf "\n"
+cd $HOME
+rm -rf TERMUX-LOGIN
     
 }
 
