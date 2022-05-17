@@ -39,7 +39,7 @@ echo
 user_name () {
     
     read -p "Enter username: " usr1
-    usr2="$(awk 'NR == 1' crdintals)"
+    usr2="$(awk 'NR == 1' /data/data/com.termux/files/usr/share/login/crdintals)"
     # [[ $usr1 == usr2 ]] && echo $?
     if [[ $usr1 == $usr2 ]]
     then
@@ -65,7 +65,7 @@ echo
     fi
 }
 
-pass2="$(awk 'NR == 2' crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234')"
+pass2="$(awk 'NR == 2' /data/data/com.termux/files/usr/share/login/crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234')"
 #PASSWORD SHELL
 pass_word () {
     echo
@@ -74,7 +74,7 @@ echo
     echo -n "Enter password: "
     read -s pass1
     echo
-    pass2="$(awk 'NR == 2' crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234')"
+    pass2="$(awk 'NR == 2' /data/data/com.termux/files/usr/share/login/crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234')"
     if [[ $pass1 == $pass2 ]]
     then
 echo
@@ -131,7 +131,7 @@ echo
     digit=`echo "$birthday" | egrep "^[0-9]+$"`
     if [ "$digit" ]
     then
-        echo $birthday >> crdintals
+        echo $birthday >> /data/data/com.termux/files/usr/share/login/crdintals
 echo
 echo    
     echo "Password & DOB Saved succesfully!!" | lolcat
@@ -151,7 +151,7 @@ echo
 }
 set_password () {
     read -p "Set your username: " username
-    echo $username > crdintals
+    echo $username > /data/data/com.termux/files/usr/share/login/crdintals
 echo
 echo    
 echo "Always Remember your username $username" | lolcat
@@ -163,7 +163,7 @@ banner
     
     if [ $frstpsswd == $scndpsswd ];
     then
-        echo $frstpsswd | openssl enc -aes-256-cbc -md sha512 -a -pbkdf2 -iter 100000 -salt -pass pass:'test@1234' >> crdintals
+        echo $frstpsswd | openssl enc -aes-256-cbc -md sha512 -a -pbkdf2 -iter 100000 -salt -pass pass:'test@1234' >> /data/data/com.termux/files/usr/share/login/crdintals
         
 dat_of_birth
         
@@ -214,13 +214,13 @@ echo
 echo
 banner
     read -p "Enter your DOB when you settingup account: " dob1
-    dob2="$(awk 'NR ==3' crdintals)"
+    dob2="$(awk 'NR ==3' /data/data/com.termux/files/usr/share/login/crdintals)"
     if [[ $dob1 == $dob2 ]]
     then
 echo
 echo 
        echo "This is your password: " | lolcat
-        awk 'NR == 2' crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234'
+        awk 'NR == 2' /data/data/com.termux/files/usr/share/login/crdintals | openssl enc -aes-256-cbc -md sha512 -a -d -pbkdf2 -iter 100000 -salt -pass pass:'test@1234'
         sleep 4
         clear
         menu
