@@ -63,7 +63,7 @@ set_username () {
 echo
 echo
     read -p "Set your username: " username
-    echo $username > crdintals
+    echo $username > /data/data/com.termux/files/usr/share/login/crdintals
     echo "Always Remember your username $username" | lolcat
     sleep 2
 }
@@ -76,7 +76,7 @@ echo
     digit=`echo "$birthday" | egrep "^[0-9]+$"`
     if [ "$digit" ]
     then
-        echo $birthday >> crdintals
+        echo $birthday >> /data/data/com.termux/files/usr/share/login/crdintals
         echo "Password & DOB Saved succesfully!!" | lolcat
     else
         printf "\033[0;31m   ENTER ONLY NUMBERS IN DOB!!"
