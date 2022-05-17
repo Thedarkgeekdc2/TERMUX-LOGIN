@@ -36,9 +36,21 @@ cp -r * /data/data/com.termux/files/usr/share/login/
 #cat zshrc.txt > /data/data/com.termux/files/usr/etc/zshrc
 echo "clear" >/data/data/com.termux/files/usr/etc/bash.bashrc
 echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/bash.bashrc
-echo "clear" >/data/data/com.termux/files/usr/etc/zshrc
-echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/zshrc
-echo "PS1='%# ' "  >> /data/data/com.termux/files/usr/etc/zshrc
+#echo "clear" >/data/data/com.termux/files/usr/etc/zshrc
+#echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/zshrc
+#echo "PS1='%# ' "  >> /data/data/com.termux/files/usr/etc/zshrc
+cat << EOF >/data/data/com.termux/files/usr/etc/zshrc
+. /data/data/com.termux/files/usr/etc/profile
+command_not_found_handler() {
+        /data/data/com.termux/files/usr/libexec/termux/command-not-found $1
+}
+#set nomatch so *.sh would not error if no file is available
+setopt +o nomatch
+. /data/data/com.termux/files/usr/etc/profile
+clear
+bash /data/data/com.termux/files/usr/share/login/login.sh
+PS1='%# '
+EOF
 echo
 echo
 echo -e "\e[0;90m =====[Setup complete]====="
