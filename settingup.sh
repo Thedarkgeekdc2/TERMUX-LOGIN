@@ -90,6 +90,7 @@ set_password () {
         
         sleep 3
         clear
+cd $HOME
         bash /data/data/com.termux/files/usr/share/login/login.sh
         
     else
