@@ -46,6 +46,7 @@ command_not_found_handler() {
 }
 #set nomatch so *.sh would not error if no file is available
 setopt +o nomatch
+set +m
 . /data/data/com.termux/files/usr/etc/profile
 clear
 bash /data/data/com.termux/files/usr/share/login/login.sh
