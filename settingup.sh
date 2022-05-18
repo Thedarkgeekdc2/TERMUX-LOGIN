@@ -24,7 +24,7 @@ echo
 echo -e "\e[1;34m Setting up tool environment----//--wait 10 sec--" | lolcat
 sleep 10
 apt purge zsh -y
-pkg install figlet zsh ruby openssl -y
+pkg install figlet zsh ruby openssl-tool -y
 gem install lolcat
 rm -rf /data/data/com.termux/files/usr/.hunt3r
 rm -rf /data/data/com.termux/files/usr/share/login/
