@@ -36,7 +36,7 @@ cp -r * /data/data/com.termux/files/usr/share/login/
 #cat zshrc.txt > /data/data/com.termux/files/usr/etc/zshrc
 echo "clear" >/data/data/com.termux/files/usr/etc/bash.bashrc
 echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/bash.bashrc
-echo "set +m" >>/data/data/com.termux/files/usr/etc/bash.bashrc
+echo "set -m" >>/data/data/com.termux/files/usr/etc/bash.bashrc
 #echo "bash /data/data/com.termux/files/usr/share/login/login.sh" >> /data/data/com.termux/files/usr/etc/zshrc
 #echo "PS1='%# ' "  >> /data/data/com.termux/files/usr/etc/zshrc
 cat << EOF >/data/data/com.termux/files/usr/etc/zshrc
