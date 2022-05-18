@@ -1,5 +1,5 @@
 #!/bin/bash
-
+trap ' '2 20
 #BANNER
 banner() {
 clear    
