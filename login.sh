@@ -256,7 +256,11 @@ start () {
     elif [[ $choose == "04" || $choose == "4" ]];
     then
         xdg-open https://instagram.com/raazzz136
-    else
+   sleep 4
+banner
+menu
+start
+ else
 banner
         menu
         start
