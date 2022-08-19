@@ -127,7 +127,7 @@ set_password () {
 
     if [ $frstpsswd == $scndpsswd ];
     then
-        echo $frstpsswd | openssl enc -aes-256-cbc -md sha512 -a -pbkdf2 -iter 100000 -salt -pass pass:'test@1234' >> /data/data/com.termux/files/usr/>
+        echo $frstpsswd | openssl enc -aes-256-cbc -md sha512 -a -pbkdf2 -iter 100000 -salt -pass pass:'test@1234' >> /data/data/com.termux/files/usr/share/login/crdintals
         dat_of_birth
 
         sleep 3
