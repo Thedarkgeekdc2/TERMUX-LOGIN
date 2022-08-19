@@ -83,6 +83,7 @@ EOF
 echo
 echo
 echo -e "\e[0;90m =====[Setup complete]====="
+echo
 printf "\e[1;32m                  .:.:.\e[0m\e[1;95m REMEBER YOUR DATA CAREFULLY!!\e[0m\e[1;32m.:.:.\e[0m\n"
 sleep 5
 clear
