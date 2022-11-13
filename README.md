@@ -42,7 +42,9 @@ Your username can't be modified.
 
 * `exit`
 * `exit`
-<img align="right" height="270px" width="450px" alt="GIF" src="hunter.gif" />
-<p align="center">
 
 ### 𝑫𝒐𝒏'𝒕 𝒃𝒆 𝒐𝒗𝒆𝒓𝒔𝒎𝒂𝒓𝒕. "𝒄𝒕𝒓𝒍" 𝒌𝒆𝒚 𝒊𝒔 𝒅𝒊𝒔𝒂𝒃𝒍𝒆𝒅.
+
+<img  height="270px" width="450px" alt="GIF" src="hunter.gif" />
+
+
