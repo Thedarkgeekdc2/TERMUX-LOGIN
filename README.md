@@ -32,7 +32,13 @@ Your username can't be modified.
 
 * `pkg install git -y`
 
+* `pkg install zsh -y`
+
+* `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
+
 * `git clone https://github.com/Thedarkgeekdc2/TERMUX-LOGIN`
+
+* `cd TERMUX-LOGIN`
 
 * `bash settingup.sh`
 
