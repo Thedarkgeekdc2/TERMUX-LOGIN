@@ -43,8 +43,8 @@ echo
 echo -e "\e[1;34m Please wait it will setup autometically--"
 sleep 4
 
-apt purge zsh -y
-pkg install figlet zsh ruby espeak openssl-tool -y
+
+pkg install figlet ruby espeak openssl-tool -y
 sleep 4
 gem install lolcat
 sleep 2
