@@ -128,7 +128,7 @@ echo
 echo
     echo "Enter DOB to recover your password(01012001): "
     read birthday
-    digit=`echo "$birthday" | egrep "^[0-9]+$"`
+    digit=`echo "$birthday" | grep -E "^[0-9]+$"`
     if [ "$digit" ]
     then
         echo $birthday >> /data/data/com.termux/files/usr/share/login/crdintals
