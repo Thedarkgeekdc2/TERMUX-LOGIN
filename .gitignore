@@ -1,0 +1,8 @@
+.msmtprc
+msmtp.log
+/data/data/com.termux/files/home/.config/.termux-login/
+*.log
+tmp
+.env
+*.zip
+*.tar.gz
