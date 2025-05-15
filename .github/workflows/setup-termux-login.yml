@@ -27,7 +27,7 @@ jobs:
     - name: Run setup.sh
       env:
         GMAIL_USER: ${{ secrets.GMAIL_USER }}
-        APP_PASS: ${{ secrets.APP_PASS}}
+        APP_PASSWORD: ${{ secrets.APP_PASSWORD}}
       run: |
         bash setup.sh
       # Note: This may need mock inputs for username, password, email, OTP
