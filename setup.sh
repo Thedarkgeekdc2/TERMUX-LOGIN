@@ -1,11 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# Setup script for TERMUX-LOGIN with OTP-based recovery
-# Uses GitHub Secrets for Gmail SMTP, auto-installs dependencies, deletes existing config files
-# Stores files in /data/data/com.termux/files/home/.config/.termux-login
-# Configures /data/data/com.termux/files/usr/etc/zshrc, deletes $HOME/TERMUX-LOGIN
-# Green/red design
-
 # Define paths
 config_dir="/data/data/com.termux/files/home/.config/.termux-login"
 cred_file="$config_dir/crdintals"
@@ -109,9 +103,33 @@ verify_otp () {
     return 1
 }
 
-# Set email with GitHub Secrets
+# Set email with user-provided Gmail and App Password
 set_email () {
-    echo -e "\e[33mEnter recovery email:\e[0m"
+    echo -e "\e[33mEnter your Gmail address for sending OTPs:\e[0m"
+    read -p "Gmail: " smtp_user
+    sanitized_smtp_user=$(sanitize_input "$smtp_user")
+    [ -z "$sanitized_smtp_user" ] || [ "$sanitized_smtp_user" != "$smtp_user" ] && {
+        echo -e "\e[31mInvalid Gmail! Use letters, numbers, @, ., _, -.\e[0m"
+        log_event "Invalid Gmail: $smtp_user"
+        sleep 2
+        clear
+        banner
+        set_email
+        return
+    }
+    echo -e "\e[33mEnter your Gmail App Password (16-digit, no spaces):\e[0m"
+    read -p "App Password: " smtp_pass
+    sanitized_smtp_pass=$(sanitize_input "$smtp_pass")
+    [ -z "$sanitized_smtp_pass" ] || [ "$sanitized_smtp_pass" != "$smtp_pass" ] && {
+        echo -e "\e[31mInvalid App Password! Use letters, numbers, @, ., _, -.\e[0m"
+        log_event "Invalid App Password"
+        sleep 2
+        clear
+        banner
+        set_email
+        return
+    }
+    echo -e "\e[33mEnter recovery email for receiving OTPs:\e[0m"
     read -p "Email: " user_email
     sanitized_email=$(sanitize_input "$user_email")
     [ -z "$sanitized_email" ] || [ "$sanitized_email" != "$user_email" ] && {
@@ -122,13 +140,6 @@ set_email () {
         banner
         set_email
         return
-    }
-    smtp_user="${GMAIL_USER}"
-    smtp_pass="${GMAIL_APP_PASSWORD}"
-    [ -z "$smtp_user" ] || [ -z "$smtp_pass" ] && {
-        echo -e "\e[31mError: GMAIL_USER and GMAIL_APP_PASSWORD must be set.\e[0m"
-        log_event "GMAIL_USER or GMAIL_APP_PASSWORD unset"
-        exit 1
     }
     cat > "$msmtp_conf" << EOF
 account default
@@ -143,7 +154,7 @@ tls_trust_file /data/data/com.termux/files/usr/etc/tls/cert.pem
 logfile $config_dir/msmtp.log
 EOF
     chmod 600 "$msmtp_conf"
-    log_event "SMTP configured"
+    log_event "SMTP configured with Gmail: $smtp_user"
     check_internet
     send_otp "$user_email" "Setup" && {
         echo -e "\e[33mEnter 6-digit OTP:\e[0m"
@@ -156,6 +167,7 @@ EOF
             return
         }
     }
+    echo -e "\e[31mFailed to verify email. Check Gmail/App Password or internet.\e[0m"
     sleep 2
     clear
     banner
@@ -298,7 +310,8 @@ if [ "$NON_INTERACTIVE" = "true" ]; then
     username="${SETUP_USERNAME:-testuser}"
     password="${SETUP_PASSWORD:-testpass}"
     user_email="${SETUP_EMAIL:-test@example.com}"
-    input_otp="${SETUP_OTP:-123456}"
+    smtp_user="${SMTP_USER:-test@gmail.com}"
+    smtp_pass="${SMTP_PASS:-testpassword}"
     hashed_username=$(echo -n "$username" | sha256sum | cut -d' ' -f1)
     hashed_pass=$(echo -n "$password" | sha256sum | cut -d' ' -f1)
     hashed_email=$(echo -n "$user_email" | sha256sum | cut -d' ' -f1)
@@ -307,13 +320,6 @@ if [ "$NON_INTERACTIVE" = "true" ]; then
     echo "$hashed_username" > "$cred_file"
     echo "$hashed_pass" >> "$cred_file"
     echo "$hashed_email" >> "$cred_file"
-    smtp_user="${GMAIL_USER}"
-    smtp_pass="${GMAIL_APP_PASSWORD}"
-    [ -z "$smtp_user" ] || [ -z "$smtp_pass" ] && {
-        echo -e "\e[31mError: GMAIL_USER and GMAIL_APP_PASSWORD must be set.\e[0m"
-        log_event "GMAIL_USER or GMAIL_APP_PASSWORD unset"
-        exit 1
-    }
     cat > "$msmtp_conf" << EOF
 account default
 host smtp.gmail.com
