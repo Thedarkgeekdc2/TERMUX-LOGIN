@@ -215,13 +215,6 @@ login () {
         clear
         cd $HOME
         welcome
-        [ -d "TERMUX-LOGIN" ] && {
-            rm -rf "TERMUX-LOGIN"/*
-            rmdir "TERMUX-LOGIN" && log_event "Deleted TERMUX-LOGIN" || {
-                echo -e "\e[31mWarning: Failed to delete TERMUX-LOGIN.\e[0m"
-                log_event "Failed to delete TERMUX-LOGIN"
-            }
-        }
         exit 0
     }
     attempts=$((attempts + 1))
