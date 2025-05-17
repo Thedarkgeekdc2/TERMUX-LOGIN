@@ -29,13 +29,13 @@ welcome() {
 
     # Banner Name
     figlet -c -k -f "$font" "$msg" | lolcat || echo -e "\e[1;36m$msg\e[0m"
-   printf "\e[1;32m                         .:.:.\e[0m\e[1;95m Contacts:- @THEDARKGEEKDC\e[0m \>
+   printf "\e[1;32m                         .:.:.\e[0m\e[1;95m Contacts:- @THEDARKGEEKDC\e[0m \e[1;32m.:.:.\n"
   #  echo
     printf "                              \e[101m\e[1;77m::  we Fuck the Fuckers  ::\e[0m\n"
     printf "                              \e[101m\e[1;77m::  We Love the Lovers!  ::\e[0m\n"
 #info
 #local cols=$(stty size | awk '{print $2}')
-#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"\e[0m" >
+#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"\e[0m"    
 # Greeting (below banner)
     hour=$(date +"%H")
     if (( hour < 12 )); then
@@ -46,13 +46,13 @@ welcome() {
         echo -e "\n\e[1;95mGood Evening, Chaudhary Sa'ab!\e[0m"
     fi
 echo
-
+    
     # Time, System Info
 #local cols=$(stty size | awk '{print $2}')
-#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"; echo >
+#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"; echo -e "\e[0m"
     # Extract local IP (only 192.0.x.x, excluding 127.0.0.1)
-    local ip=$(ifconfig 2>/dev/null | grep -oP 'inet \K[\d.]+' | grep -v '127.0.0.1' | grep -m >
-
+    local ip=$(ifconfig 2>/dev/null | grep -oP 'inet \K[\d.]+' | grep -v '127.0.0.1' | grep -m 1 '^192')
+    
     # Fetch Public IP using curl
     local public_ip=$(curl -s https://ipv4.icanhazip.com)
 
@@ -85,6 +85,8 @@ echo
     printf '=%.0s' $(seq 1 $cols)
     echo -e "\n"
 }
+
+# Call the banner
 
 
 # Logging function
@@ -136,7 +138,7 @@ send_otp () {
         echo "Your OTP is: $otp"
         echo "~THEDARKGEEKDC©2025-26"
     } | msmtp --file="$msmtp_conf" "$email" && {
-        echo -e "\e[34mOTP sent! Check email (including spam).\e[0m"
+        echo -e "\e[34mOTP sent! Check email including spam.\e[0m"
         log_event "OTP sent to $email for $context"
         return 0
     }
@@ -236,7 +238,7 @@ menu () {
     echo -e "\e[33m[1] Login\e[0m"
     echo -e "\e[33m[2] Change Password\e[0m"
     echo -e "\e[33m[3] Recover Account\e[0m"
-    echo -e "\e[33m[4] Follow on Instagram\e[0m"
+    echo -e "\e[33m[4] Contact @THEDARKGEEKDC\e[0m"
     echo
 }
 
@@ -307,7 +309,7 @@ set_password () {
     hashed_username=$(echo -n "$username" | sha256sum | cut -d' ' -f1)
     echo "$hashed_username" > "$cred_file"
     echo -e "\e[34mUsername set: $username\e[0m"
-    log_event "Username set: $username (hashed)"
+    log_event "Username set: $username hashed"
     sleep 2
     banner
     echo -e "\e[33mSet password:\e[0m"
@@ -404,10 +406,10 @@ start () {
         2) chg_pass ;;
         3) recover_account ;;
         4) command -v xdg-open &> /dev/null && {
-               xdg-open https://instagram.com/raazzz136
+               xdg-open https://linktr.ee/thedarkgeekdc
                log_event "Opened Instagram"
            } || {
-               echo -e "\e[31mxdg-open not found! Visit https://instagram.com/raazzz136\e[0m"
+               echo -e "\e[31mxdg-open not found! \e[0m"
                log_event "xdg-open not found"
            }
            sleep 4
@@ -423,6 +425,5 @@ start () {
 
 # Signal handling
 trap 'echo -e "\n\e[31mCannot interrupt login!\e[0m"; banner; menu; start' INT TSTP
-
 # Run
 start
