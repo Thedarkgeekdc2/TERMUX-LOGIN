@@ -15,6 +15,78 @@ log_file="$config_dir/login.log"
 attempts=0
 max_attempts=3
 
+
+welcome() {
+    clear
+
+    local cols=$(stty size | awk '{print $2}')
+    local msg="  Mr DK"
+    local font="ANSI Shadow"
+
+    # Top Border
+    printf '=%.0s' $(seq 1 $cols)
+    echo
+
+    # Banner Name
+    figlet -c -k -f "$font" "$msg" | lolcat || echo -e "\e[1;36m$msg\e[0m"
+   printf "\e[1;32m                         .:.:.\e[0m\e[1;95m Contacts:- @THEDARKGEEKDC\e[0m \>
+  #  echo
+    printf "                              \e[101m\e[1;77m::  we Fuck the Fuckers  ::\e[0m\n"
+    printf "                              \e[101m\e[1;77m::  We Love the Lovers!  ::\e[0m\n"
+#info
+#local cols=$(stty size | awk '{print $2}')
+#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"\e[0m" >
+# Greeting (below banner)
+    hour=$(date +"%H")
+    if (( hour < 12 )); then
+        echo -e "\n\e[1;96mGood Morning, Chaudhary Sa'ab!\e[0m"
+    elif (( hour < 18 )); then
+        echo -e "\n\e[1;92mGood Afternoon, Chaudhary Sa'ab!\e[0m"
+    else
+        echo -e "\n\e[1;95mGood Evening, Chaudhary Sa'ab!\e[0m"
+    fi
+echo
+
+    # Time, System Info
+#local cols=$(stty size | awk '{print $2}')
+#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"; echo >
+    # Extract local IP (only 192.0.x.x, excluding 127.0.0.1)
+    local ip=$(ifconfig 2>/dev/null | grep -oP 'inet \K[\d.]+' | grep -v '127.0.0.1' | grep -m >
+
+    # Fetch Public IP using curl
+    local public_ip=$(curl -s https://ipv4.icanhazip.com)
+
+
+    echo -e "\e[1;93mTime      : \e[0m$(date +"%H:%M:%S")"
+    echo -e "\e[1;93mUser      : \e[0m$(whoami) @ ${ip:-NA}"
+    echo -e "\e[1;93mPublic IP : \e[0m${public_ip:-NA}"
+    echo -e "\e[1;93mUptime    : \e[0m$(uptime -p)"
+    echo -e "\e[1;93mShell     : \e[0m$SHELL"
+
+    echo
+
+    # Hacker Quote (at end) with 10 quotes in red color
+    local quotes=(
+      "Hack the planet!"
+      "Code is poetry."
+      "There is no system I can't hack."
+      "Talk is cheap, show me the code."
+      "We Love the Love, Not the Loop."
+      "You can’t patch a hole in a system if you don’t know where it is."
+      "The best way to predict the future is to invent it."
+      "The greatest vulnerability is a lack of imagination."
+      "Sudo is not a suggestion, it’s a command."
+      "Security is a state of mind, not a product."
+    )
+    echo -e "\e[1;91mQuote     : ${quotes[$RANDOM % ${#quotes[@]}]}\e[0m"
+
+    echo
+    # Bottom Border
+    printf '=%.0s' $(seq 1 $cols)
+    echo -e "\n"
+}
+
+
 # Logging function
 log_event () {
     echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$log_file"
@@ -140,6 +212,7 @@ login () {
         sleep 2
         clear
         cd $HOME
+        welcome
         [ -d "TERMUX-LOGIN" ] && {
             rm -rf "TERMUX-LOGIN"/*
             rmdir "TERMUX-LOGIN" && log_event "Deleted TERMUX-LOGIN" || {
@@ -353,73 +426,3 @@ trap 'echo -e "\n\e[31mCannot interrupt login!\e[0m"; banner; menu; start' INT T
 
 # Run
 start
-welcome() {
-    clear
-
-    local cols=$(stty size | awk '{print $2}')
-    local msg="  Mr DK"
-    local font="ANSI Shadow"
-
-    # Top Border
-    printf '=%.0s' $(seq 1 $cols)
-    echo
-
-    # Banner Name
-    figlet -c -k -f "$font" "$msg" | lolcat || echo -e "\e[1;36m$msg\e[0m"
-   printf "\e[1;32m                         .:.:.\e[0m\e[1;95m Contacts:- @THEDARKGEEKDC\e[0m \>
-  #  echo
-    printf "                              \e[101m\e[1;77m::  we Fuck the Fuckers  ::\e[0m\n"
-    printf "                              \e[101m\e[1;77m::  We Love the Lovers!  ::\e[0m\n"
-#info
-#local cols=$(stty size | awk '{print $2}')
-#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"\e[0m" >
-# Greeting (below banner)
-    hour=$(date +"%H")
-    if (( hour < 12 )); then
-        echo -e "\n\e[1;96mGood Morning, Chaudhary Sa'ab!\e[0m"
-    elif (( hour < 18 )); then
-        echo -e "\n\e[1;92mGood Afternoon, Chaudhary Sa'ab!\e[0m"
-    else
-        echo -e "\n\e[1;95mGood Evening, Chaudhary Sa'ab!\e[0m"
-    fi
-echo
-
-    # Time, System Info
-#local cols=$(stty size | awk '{print $2}')
-#printf '\e[1;96m'; printf '%*s\n' "$cols" "------[ System Info ]------" | sed "s/ /-/g"; echo >
-    # Extract local IP (only 192.0.x.x, excluding 127.0.0.1)
-    local ip=$(ifconfig 2>/dev/null | grep -oP 'inet \K[\d.]+' | grep -v '127.0.0.1' | grep -m >
-
-    # Fetch Public IP using curl
-    local public_ip=$(curl -s https://ipv4.icanhazip.com)
-
-
-    echo -e "\e[1;93mTime      : \e[0m$(date +"%H:%M:%S")"
-    echo -e "\e[1;93mUser      : \e[0m$(whoami) @ ${ip:-NA}"
-    echo -e "\e[1;93mPublic IP : \e[0m${public_ip:-NA}"
-    echo -e "\e[1;93mUptime    : \e[0m$(uptime -p)"
-    echo -e "\e[1;93mShell     : \e[0m$SHELL"
-
-    echo
-
-    # Hacker Quote (at end) with 10 quotes in red color
-    local quotes=(
-      "Hack the planet!"
-      "Code is poetry."
-      "There is no system I can't hack."
-      "Talk is cheap, show me the code."
-      "We Love the Love, Not the Loop."
-      "You can’t patch a hole in a system if you don’t know where it is."
-      "The best way to predict the future is to invent it."
-      "The greatest vulnerability is a lack of imagination."
-      "Sudo is not a suggestion, it’s a command."
-      "Security is a state of mind, not a product."
-    )
-    echo -e "\e[1;91mQuote     : ${quotes[$RANDOM % ${#quotes[@]}]}\e[0m"
-
-    echo
-    # Bottom Border
-    printf '=%.0s' $(seq 1 $cols)
-    echo -e "\n"
-}
-welcome
