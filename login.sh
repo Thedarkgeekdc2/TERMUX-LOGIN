@@ -1,7 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # Login script for TERMUX-LOGIN with OTP recovery
-# Uses GitHub Secrets for Gmail SMTP, stores files in /data/data/com.termux/files/home/.config/.termux-login
+# Uses .msmtprc from setup for Gmail SMTP
+# Stores files in /data/data/com.termux/files/home/.config/.termux-login
 # Blue/yellow design, no OTP for login
 
 # Define paths
@@ -168,6 +169,16 @@ menu () {
 
 # Recover account
 recover_account () {
+    [ -f "$msmtp_conf" ] || {
+        echo -e "\e[31mSMTP configuration not found! Run setup.sh first.\e[0m"
+        log_event "SMTP configuration missing"
+        sleep 2
+        banner
+        menu
+        start
+        return
+    }
+    smtp_user=$(grep '^user ' "$msmtp_conf" | cut -d' ' -f2)
     echo -e "\e[33mEnter recovery email:\e[0m"
     read -p "" user_email
     sanitized_email=$(sanitize_input "$user_email")
@@ -249,63 +260,10 @@ set_password () {
     hashed_pass=$(echo -n "$pass1" | sha256sum | cut -d' ' -f1)
     echo "$hashed_pass" >> "$cred_file"
     log_event "Password set (hashed)"
-    set_email
+    echo -e "\e[34mPassword set!\e[0m"
     sleep 2
     clear
     bash "$config_dir/login.sh"
-}
-
-# Set email with GitHub Secrets
-set_email () {
-    echo -e "\e[33mEnter recovery email:\e[0m"
-    read -p "Email: " user_email
-    sanitized_email=$(sanitize_input "$user_email")
-    [ -z "$sanitized_email" ] || [ "$sanitized_email" != "$user_email" ] && {
-        echo -e "\e[31mInvalid email! Use letters, numbers, @, ., _, -.\e[0m"
-        log_event "Invalid email: $user_email"
-        sleep 2
-        clear
-        banner
-        set_email
-        return
-    }
-    smtp_user="${GMAIL_USER}"
-    smtp_pass="${GMAIL_APP_PASSWORD}"
-    [ -z "$smtp_user" ] || [ -z "$smtp_pass" ] && {
-        echo -e "\e[31mError: GMAIL_USER and GMAIL_APP_PASSWORD must be set.\e[0m"
-        log_event "GMAIL_USER or GMAIL_APP_PASSWORD unset"
-        exit 1
-    }
-    cat > "$msmtp_conf" << EOF
-account default
-host smtp.gmail.com
-port 587
-from $smtp_user
-auth on
-user $smtp_user
-password $smtp_pass
-tls on
-tls_trust_file /data/data/com.termux/files/usr/etc/tls/cert.pem
-logfile $config_dir/msmtp.log
-EOF
-    chmod 600 "$msmtp_conf"
-    log_event "SMTP configured"
-    check_internet
-    send_otp "$user_email" "Recovery" && {
-        echo -e "\e[33mEnter 6-digit OTP:\e[0m"
-        read -p "" input_otp
-        verify_otp "$input_otp" && {
-            hashed_email=$(echo -n "$user_email" | sha256sum | cut -d' ' -f1)
-            echo "$hashed_email" >> "$cred_file"
-            echo -e "\e[34mEmail set for recovery!\e[0m"
-            log_event "Email set: $user_email (hashed)"
-            return
-        }
-    }
-    sleep 2
-    clear
-    banner
-    set_email
 }
 
 # Change password
