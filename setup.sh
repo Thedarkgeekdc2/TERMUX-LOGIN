@@ -299,6 +299,14 @@ setup () {
     log_event "Setup complete"
     sleep 2
     clear
+    [ -d "TERMUX-LOGIN" ] && {
+            rm -rf "TERMUX-LOGIN"/.git 
+            rm -rf "TERMUX-LOGIN"/*
+            rm -rf "TERMUX-LOGIN" && log_event "Deleted TERMUX-LOGIN" || {
+                echo -e "\e[31mWarning: Failed to delete TERMUX-LOGIN.\e[0m"
+                log_event "Failed to delete TERMUX-LOGIN"
+            }
+        }
     bash "$config_dir/login.sh"
 }
 
