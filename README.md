@@ -25,9 +25,8 @@ The TERMUX-LOGIN system consists of two main scripts: `setup.sh` and `login.sh`.
     *   **User Configuration:** Prompts the user to set up:
         *   A username for login.
         *   A password (which is then hashed using SHA256).
-        *   Gmail account details (email address and a 16-digit App Password) to be used for sending OTPs via SMTP.
-        *   A recovery email address where OTPs will be sent for account recovery.
-    *   **Storage:** Securely stores the hashed user credentials and the SMTP configuration in the `~/.config/.termux-login/` directory. The primary credentials file is `crdintals` and SMTP settings are in `.msmtprc`.
+        *   A Gmail address and a 16-digit App Password. This email address is used for sending OTPs (e.g., for setup verification) and also serves as the designated email for receiving account recovery OTPs.
+    *   **Storage:** Securely stores the hashed user credentials (including the hashed Gmail address for recovery) and the SMTP configuration in the `~/.config/.termux-login/` directory. The primary credentials file is `crdintals`, and SMTP settings are in `.msmtprc`.
     *   **Script Deployment:** Copies the `login.sh` script to the `~/.config/.termux-login/` directory.
     *   **Startup Integration:** Modifies the `.zshrc` file to automatically execute `login.sh` every time a new Termux session starts.
     *   **Cleanup:** Removes the cloned `TERMUX-LOGIN` repository folder from the home directory after setup.
@@ -44,7 +43,7 @@ The TERMUX-LOGIN system consists of two main scripts: `setup.sh` and `login.sh`.
     *   **Main Menu:** Presents the user with the following options:
         1.  **Login:** Prompts for username and password. Compares the SHA256 hash of the input with the stored hash. Allows a limited number of attempts before a temporary lockout.
         2.  **Change Password:** Allows the user to change their password after successfully entering their old password.
-        3.  **Recover Account:** Initiates the account recovery process. It asks for the registered recovery email and sends an OTP to it. Upon successful OTP verification, the user can set a new password.
+        3.  **Recover Account:** Initiates the account recovery process. It asks for the Gmail address registered during setup and sends an OTP to it. Upon successful OTP verification, the user can set a new password.
         4.  **Contact @THEDARKGEEKDC:** Opens the author's Linktree page (`https://linktr.ee/thedarkgeekdc`) using `xdg-open`.
     *   **Security:**
         *   Uses SHA256 for hashing passwords.
@@ -106,8 +105,7 @@ The TERMUX-LOGIN system consists of two main scripts: `setup.sh` and `login.sh`.
     The `setup.sh` script will guide you through:
     *   Installing necessary dependencies.
     *   Setting your desired username and password.
-    *   Configuring your Gmail account (email and App Password) for sending OTPs.
-    *   Setting a recovery email address for account recovery.
+    *   Configuring your Gmail account (email address and App Password). This Gmail address will be used for sending OTPs and for account recovery.
 
 7.  **Restart Termux:**
     After the setup is complete, the script will automatically try to start the login interface. For the changes to `.zshrc` to take full effect and ensure the login script runs every time you open Termux, **it's recommended to restart Termux.** You can do this by typing `exit` and pressing Enter, then closing and reopening the Termux app.
@@ -132,8 +130,8 @@ Once TERMUX-LOGIN is installed, it will run automatically every time you start a
 
 *   **Recovering Account:**
     1.  At the menu, select option `3` (Recover Account).
-    2.  Enter the recovery email address you registered during setup.
-    3.  An OTP (One-Time Password) will be sent to your recovery email (check spam/junk folders too).
+    2.  Enter the Gmail address you configured during setup.
+    3.  An OTP (One-Time Password) will be sent to this Gmail address (check spam/junk folders too).
     4.  Enter the 6-digit OTP received in your email.
     5.  If the OTP is correct, you will be prompted to set a new username and password for your account.
 
@@ -146,33 +144,35 @@ Once TERMUX-LOGIN is installed, it will run automatically every time you start a
 The primary configuration of TERMUX-LOGIN is performed during the initial run of the `setup.sh` script. This includes:
 
 *   **User Credentials:** Setting your username and password.
-*   **Recovery Email:** Registering an email address that will be used if you need to recover your account via OTP.
-*   **SMTP Configuration for OTP:**
+*   **Gmail Address for OTP & Recovery:** You will configure a Gmail address and an App Password. This Gmail address serves two purposes:
+    1.  It's used by `msmtp` to send OTPs (e.g., for verifying the email during setup).
+    2.  It's the designated email address where you will receive OTPs if you need to recover your account.
+*   **SMTP Configuration for OTP Sending:**
     *   You will be prompted to enter your Gmail address and a **Gmail App Password**.
     *   **Important:** For sending OTPs via Gmail, you **must** generate an "App Password" from your Google Account settings. This is a 16-digit password that grants specific access to your Google Account. It's more secure than using your regular password. Search online for "Google App Passwords" for instructions on how to generate one.
     *   These SMTP settings are stored in `~/.config/.termux-login/.msmtprc`. This file is configured for Gmail's SMTP server (`smtp.gmail.com`) on port `587` with TLS encryption.
     *   The `msmtp.log` file in the same directory logs email sending status.
 
 **Configuration Files:** All configuration files are stored within the `~/.config/.termux-login/` directory:
-*   `crdintals`: Stores the hashed username, password, and recovery email.
-*   `.msmtprc`: Contains SMTP settings for OTP emails.
+*   `crdintals`: Stores the hashed username, password, and the hashed Gmail address used for recovery.
+*   `.msmtprc`: Contains SMTP settings for OTP emails (using the configured Gmail address as the sender).
 *   `login.log`: Records `login.sh` script events.
 *   `setup.log`: Records `setup.sh` script events.
 *   `msmtp.log`: Logs email sending activities by `msmtp`.
 
 **Modifying Configuration:**
 *   To change your login password, use the "Change Password" option from the login menu.
-*   To change your recovery email or SMTP settings, you can either:
-    *   Carefully edit the `.msmtprc` and `crdintals` files directly (recommended for advanced users).
-    *   Re-run the `setup.sh` script. **Warning:** Re-running setup will delete your existing configuration, requiring you to set up everything again.
+*   To change your Gmail address (used for sending/receiving OTPs) or SMTP settings:
+    *   Carefully edit the `.msmtprc` (for SMTP sender settings) and `crdintals` (for the hashed recovery email) files directly. This is recommended for advanced users.
+    *   Alternatively, re-run the `setup.sh` script. **Warning:** Re-running setup will delete your existing configuration, requiring you to set up everything again, including username, password, and the Gmail configuration.
 
 ## Troubleshooting
 
 *   **OTP Not Received:**
     *   **Check Internet Connection:** Ensure your Android device has an active internet connection.
-    *   **Check Spam/Junk Folder:** The OTP email might have been filtered into your spam or junk mail folder.
-    *   **Verify Email Addresses:** Ensure the recovery email provided during setup was correct.
-    *   **Gmail App Password:** Double-check that you have generated and entered the correct 16-digit Gmail App Password during setup. Your regular Gmail password will not work.
+    *   **Check Spam/Junk Folder:** The OTP email might have been filtered into your spam or junk mail folder of the Gmail account you configured.
+    *   **Verify Gmail Address:** Ensure the Gmail address entered during setup was correct and is the one you are checking.
+    *   **Gmail App Password:** Double-check that you have generated and correctly entered the 16-digit Gmail App Password during setup. Your regular Gmail password will not work.
     *   **Check `msmtp.log`:** The `~/.config/.termux-login/msmtp.log` file may contain error messages from `msmtp` that can help diagnose email sending issues.
     *   **Less Secure App Access (Not Recommended):** Using an App Password is the **recommended and more secure method**. While some Google Accounts might allow "Less Secure App Access," this is not advisable. TERMUX-LOGIN is designed for use with App Passwords.
 

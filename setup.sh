@@ -129,18 +129,6 @@ set_email () {
         set_email
         return
     }
-    echo -e "\e[33mEnter recovery email for receiving OTPs:\e[0m"
-    read -p "Email: " user_email
-    sanitized_email=$(sanitize_input "$user_email")
-    [ -z "$sanitized_email" ] || [ "$sanitized_email" != "$user_email" ] && {
-        echo -e "\e[31mInvalid email! Use letters, numbers, @, ., _, -.\e[0m"
-        log_event "Invalid email: $user_email"
-        sleep 2
-        clear
-        banner
-        set_email
-        return
-    }
     cat > "$msmtp_conf" << EOF
 account default
 host smtp.gmail.com
@@ -156,18 +144,18 @@ EOF
     chmod 600 "$msmtp_conf"
     log_event "SMTP configured with Gmail: $smtp_user"
     check_internet
-    send_otp "$user_email" "Setup" && {
-        echo -e "\e[33mEnter 6-digit OTP:\e[0m"
+    send_otp "$smtp_user" "Setup" && {
+        echo -e "\e[33mEnter 6-digit OTP (sent to $smtp_user):\e[0m"
         read -p "" input_otp
         verify_otp "$input_otp" && {
-            hashed_email=$(echo -n "$user_email" | sha256sum | cut -d' ' -f1)
+            hashed_email=$(echo -n "$smtp_user" | sha256sum | cut -d' ' -f1)
             echo "$hashed_email" >> "$cred_file"
-            echo -e "\e[32mEmail set for recovery!\e[0m"
-            log_event "Email set: $user_email (hashed)"
+            echo -e "\e[32mEmail set for OTP and recovery: $smtp_user\e[0m"
+            log_event "Email set for OTP/recovery: $smtp_user (hashed)"
             return
         }
     }
-    echo -e "\e[31mFailed to verify email. Check Gmail/App Password or internet.\e[0m"
+    echo -e "\e[31mFailed to verify email. Check Gmail/App Password, OTP, or internet.\e[0m"
     sleep 2
     clear
     banner
@@ -317,12 +305,11 @@ trap 'echo -e "\n\e[31mCannot interrupt setup!\e[0m"; banner; setup' INT TSTP
 if [ "$NON_INTERACTIVE" = "true" ]; then
     username="${SETUP_USERNAME:-testuser}"
     password="${SETUP_PASSWORD:-testpass}"
-    user_email="${SETUP_EMAIL:-test@example.com}"
     smtp_user="${SMTP_USER:-test@gmail.com}"
     smtp_pass="${SMTP_PASS:-testpassword}"
     hashed_username=$(echo -n "$username" | sha256sum | cut -d' ' -f1)
     hashed_pass=$(echo -n "$password" | sha256sum | cut -d' ' -f1)
-    hashed_email=$(echo -n "$user_email" | sha256sum | cut -d' ' -f1)
+    hashed_email=$(echo -n "$smtp_user" | sha256sum | cut -d' ' -f1)
     mkdir -p "$config_dir" || exit 1
     chmod 700 "$config_dir"
     echo "$hashed_username" > "$cred_file"
